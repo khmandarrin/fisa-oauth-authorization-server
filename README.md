@@ -2,6 +2,16 @@
 
 
 ## 전체 OAuth2 흐름
+<img width="1300" height="868" alt="image (1)" src="https://github.com/user-attachments/assets/0eaea57d-c215-44bd-abb2-025dd3c6c725" />
+<img width="1534" height="986" alt="image (2)" src="https://github.com/user-attachments/assets/b8f56221-fdc3-4b51-a783-2195d5f73f2e" />
+<img width="1548" height="986" alt="image (3)" src="https://github.com/user-attachments/assets/0ef88a19-6c45-4b56-832f-537251679b3b" />
+<img width="1472" height="1362" alt="image (4)" src="https://github.com/user-attachments/assets/df9afc76-b293-4250-9201-ddd4e0b2cb4c" />
+<img width="1340" height="614" alt="image (5)" src="https://github.com/user-attachments/assets/a55076a0-56a5-4f5f-865c-bf527a2da0eb" />
+<img width="1336" height="736" alt="image (6)" src="https://github.com/user-attachments/assets/12fa33a3-8f25-429b-8b4c-ab4ed08be952" />
+
+
+
+
 
 ### 사전 작업. 관리자 클라이언트 등록
 
