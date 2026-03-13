@@ -43,4 +43,21 @@ public class ClientRegisterResponse {
         public List<String> getScopes() {
             return scopes;
         }
+    private void validateRedirectUris(List<String> redirectUris) {
+
+        for (String uri : redirectUris) {
+
+            if (!uri.startsWith("http://") && !uri.startsWith("https://")) {
+                throw new IllegalArgumentException("redirectUri는 http/https만 허용됩니다.");
+            }
+
+            if (uri.contains("localhost") || uri.contains("127.0.0.1")) {
+                continue; // 개발환경 허용
+            }
+
+            if (!uri.contains(".")) {
+                throw new IllegalArgumentException("올바른 redirectUri가 아닙니다.");
+            }
+        }
+    }
     }

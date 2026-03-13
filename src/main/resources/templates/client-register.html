@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Provider Client 등록</title>
+</head>
+<body>
+
+<h2>Client 등록</h2>
+
+<form th:action="@{/provider/clients}" th:object="${request}" method="post">
+
+    <div>
+        <label>Client Name</label>
+        <input type="text" th:field="*{clientName}" />
+    </div>
+
+    <div>
+        <label>Redirect URI</label>
+        <input type="text" name="redirectUris" />
+    </div>
+
+    <div>
+        <label>Scopes (쉼표 구분)</label>
+        <input type="text" name="scopes" placeholder="read,write,profile"/>
+    </div>
+
+    <button type="submit">등록</button>
+
+</form>
+
+</body>
+</html>

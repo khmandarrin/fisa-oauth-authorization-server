@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>등록 완료</title>
+</head>
+<body>
+
+<h2>Client 등록 완료</h2>
+
+<p>Client ID: <span th:text="${result.clientId}"></span></p>
+<p>Client Secret: <span th:text="${result.clientSecret}"></span></p>
+<p>Client Name: <span th:text="${result.clientName}"></span></p>
+
+<p>Redirect URIs:</p>
+<ul>
+    <li th:each="uri : ${result.redirectUris}" th:text="${uri}"></li>
+</ul>
+
+<p>Scopes:</p>
+<ul>
+    <li th:each="scope : ${result.scopes}" th:text="${scope}"></li>
+</ul>
+
+<a th:href="@{/developer/clients/new}">다시 등록</a>
+
+</body>
+</html>
