@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>권한 동의</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .consent-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #1a73e8, #4dabf7);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+        }
+
+        .logo-icon svg {
+            width: 28px;
+            height: 28px;
+            fill: #ffffff;
+        }
+
+        .logo-section h1 {
+            font-size: 20px;
+            color: #202124;
+            font-weight: 600;
+        }
+
+        .consent-card {
+            width: 420px;
+            padding: 40px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+
+        .consent-card h2 {
+            text-align: center;
+            color: #202124;
+            font-size: 22px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .consent-subtitle {
+            text-align: center;
+            color: #5f6368;
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .client-name {
+            color: #1a73e8;
+            font-weight: 600;
+        }
+
+        .user-name {
+            color: #202124;
+            font-weight: 600;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e8eaed;
+            margin-bottom: 24px;
+        }
+
+        .scope-section h3 {
+            font-size: 13px;
+            color: #5f6368;
+            font-weight: 500;
+            margin-bottom: 14px;
+        }
+
+        .scope-list {
+            list-style: none;
+            margin-bottom: 28px;
+        }
+
+        .scope-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: #fafafa;
+            border: 1.5px solid #dadce0;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #202124;
+        }
+
+        .scope-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #1a73e8;
+            cursor: pointer;
+        }
+
+        .scope-item label {
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-approve {
+            flex: 1;
+            padding: 14px;
+            background: linear-gradient(135deg, #1a73e8, #1567d3);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-approve:hover {
+            background: linear-gradient(135deg, #1567d3, #1257b0);
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-approve:active {
+            transform: translateY(0);
+        }
+
+        .btn-deny {
+            flex: 1;
+            padding: 14px;
+            background: #ffffff;
+            color: #5f6368;
+            border: 1.5px solid #dadce0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-deny:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="consent-wrapper">
+    <div class="logo-section">
+        <div class="logo-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+            </svg>
+        </div>
+        <h1>OAuth Authorization Server</h1>
+    </div>
+
+    <div class="consent-card">
+        <h2>권한 동의</h2>
+        <p class="consent-subtitle">
+            <span class="client-name" th:text="${clientName}"></span> 앱이
+            <span class="user-name" th:text="${principalName}"></span> 계정에 대한 접근을 요청합니다.
+        </p>
+
+        <div class="divider"></div>
+
+        <form method="post" th:action="@{/oauth2/authorize}">
+            <input type="hidden" name="client_id" th:value="${clientId}" />
+            <input type="hidden" name="state" th:value="${state}" />
+
+            <div class="scope-section">
+                <h3>요청하는 권한</h3>
+                <ul class="scope-list">
+                    <li th:each="scope : ${scopes}" class="scope-item">
+                        <input type="checkbox" th:name="scope" th:id="${scope}" th:value="${scope}" checked />
+                        <label th:for="${scope}" th:text="${scope}"></label>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn-deny" disabled>거부</button>
+                <button type="submit" class="btn-approve" name="consent_action" value="approve">허용</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

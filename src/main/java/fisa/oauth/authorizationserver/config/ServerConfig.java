@@ -52,6 +52,9 @@ public class ServerConfig {
                 .oauth2AuthorizationServer((authorizationServer) -> {
                     http.securityMatcher(authorizationServer.getEndpointsMatcher());
                     authorizationServer
+                            .authorizationEndpoint(endpoint -> endpoint
+                                    .consentPage("/oauth2/consent")
+                            )
                             .oidc(Customizer.withDefaults());	// Enable OpenID Connect 1.0
                 })
                 .authorizeHttpRequests((authorize) ->
