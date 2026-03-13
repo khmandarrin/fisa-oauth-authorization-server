@@ -206,7 +206,9 @@
                 <h3>요청하는 권한</h3>
                 <ul class="scope-list">
                     <li th:each="scope : ${scopes}" class="scope-item">
-                        <input type="checkbox" th:name="scope" th:id="${scope}" th:value="${scope}" checked />
+                        <input th:if="${scope == 'openid'}" type="checkbox" th:id="${scope}" th:value="${scope}" checked disabled />
+                        <input th:if="${scope == 'openid'}" type="hidden" th:name="scope" value="openid" />
+                        <input th:if="${scope != 'openid'}" type="checkbox" th:name="scope" th:id="${scope}" th:value="${scope}" checked />
                         <label th:for="${scope}" th:text="${scope}"></label>
                     </li>
                 </ul>
