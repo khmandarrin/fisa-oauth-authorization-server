@@ -7,7 +7,7 @@
 
 - [구성](#구성)
 - [참고 문서](#참고-문서)
-- [전체 OAuth2 흐름](#전체-oauth2-흐름)
+- [전체 OAuth2 흐름 (시퀀스)](#전체-oauth2-흐름)
 - [API 엔드포인트](#api-엔드포인트)
   - [Provider (:9000)](#provider-9000)
   - [백엔드 / Resource Server (:8081)](#백엔드--resource-server-8081)
