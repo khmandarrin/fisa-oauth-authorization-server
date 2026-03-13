@@ -84,7 +84,9 @@ public class ServerConfig {
                         // 그 외 나머지 요청은 로그인 필요
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults()
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .permitAll()
                 );
 
         return http.build();
