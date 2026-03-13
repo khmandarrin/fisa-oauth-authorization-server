@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,12 +28,16 @@ public class ProviderClientService {
             throw new IllegalArgumentException("clientName은 필수입니다.");
         }
 
-        if (request.getRedirectUris() == null || request.getRedirectUris().isEmpty()) {
+        // 폼에서 쉼표로 구분된 문자열이 하나의 원소로 들어올 수 있으므로 분리
+        List<String> redirectUris = splitCsv(request.getRedirectUris());
+        List<String> requestScopes = splitCsv(request.getScopes());
+
+        if (redirectUris.isEmpty()) {
             throw new IllegalArgumentException("redirectUri는 최소 1개 필요합니다.");
         }
 
         // code 탈취 공격 방지 redirect uri 검증
-        validateRedirectUris(request.getRedirectUris());
+        validateRedirectUris(redirectUris);
 
         String clientId = "client-" + UUID.randomUUID();
         String rawClientSecret = UUID.randomUUID().toString().replace("-", "");
@@ -47,17 +52,18 @@ public class ProviderClientService {
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN);
 
-        request.getRedirectUris().forEach(builder::redirectUri);
+        redirectUris.forEach(builder::redirectUri);
 
-        List<String> scopes = request.getScopes() == null || request.getScopes().isEmpty()
+        List<String> scopes = requestScopes.isEmpty()
                 ? List.of("read")
-                : request.getScopes();
+                : requestScopes;
 
         scopes.forEach(builder::scope);
 
         RegisteredClient client = builder
                 .clientSettings(ClientSettings.builder()
                         .requireAuthorizationConsent(true)
+                        .requireProofKey(false)
                         .build())
                 .build();
 
@@ -67,9 +73,20 @@ public class ProviderClientService {
                 clientId,
                 rawClientSecret,
                 request.getClientName(),
-                request.getRedirectUris(),
+                redirectUris,
                 scopes
         );
+    }
+
+    private List<String> splitCsv(List<String> input) {
+        if (input == null || input.isEmpty()) {
+            return List.of();
+        }
+        return input.stream()
+                .flatMap(s -> Arrays.stream(s.split(",")))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
     }
 
     private void validateRedirectUris(List<String> redirectUris) {

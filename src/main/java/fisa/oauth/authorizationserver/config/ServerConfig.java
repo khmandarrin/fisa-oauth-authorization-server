@@ -84,13 +84,7 @@ public class ServerConfig {
                         // 그 외 나머지 요청은 로그인 필요
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
-                        // 커스텀 로그인 페이지 경로
-                        .loginPage("/login")
-                        // 로그인 페이지 자체는 모두 접근 가능
-                        .permitAll()
-                        // 로그인 성공하면 클라이언트 메인페이지로 이동. 여기서 클라이언트 등록 페이지로 이동하게 할 수도 있음
-                        .defaultSuccessUrl("/")
+                .formLogin(Customizer.withDefaults()
                 );
 
         return http.build();
