@@ -62,6 +62,8 @@ public class ServerConfig {
                 // authorization endpoint
                 .exceptionHandling((exceptions) -> exceptions
                         .defaultAuthenticationEntryPointFor(
+                                // 인증 안 된 사용자가 HTML 요청으로 authorize 엔드포인트 접근하면
+                                // /login 페이지로 보내도록 설정
                                 new LoginUrlAuthenticationEntryPoint("/login"),
                                 new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                         )
@@ -75,14 +77,20 @@ public class ServerConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
+                        // 정적 리소스는 로그인 없이 허용
                         .requestMatchers("/css/**", "/js/**").permitAll()
+                        // 개발자용 클라이언트 등록 페이지/등록 API는 ADMIN만 접근 가능
                         .requestMatchers("/developer/**", "/provider/**").hasRole("ADMIN")
+                        // 그 외 나머지 요청은 로그인 필요
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
+                        // 커스텀 로그인 페이지 경로
                         .loginPage("/login")
+                        // 로그인 페이지 자체는 모두 접근 가능
                         .permitAll()
-                        .defaultSuccessUrl("/developer/clients/new", true)
+                        // 로그인 성공하면 클라이언트 메인페이지로 이동. 여기서 클라이언트 등록 페이지로 이동하게 할 수도 있음
+                        .defaultSuccessUrl("/")
                 );
 
         return http.build();
@@ -90,29 +98,36 @@ public class ServerConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+        // 비밀번호를 안전하게 암호화하기 위한 PasswordEncoder
+        // {bcrypt}, {noop} 같은 prefix를 지원하는 delegating encoder
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+        // 관리자 계정: 클라이언트 등록 페이지 접근 가능
         UserDetails admin = User.withUsername("admin")
                 .password(passwordEncoder.encode("1234"))
                 .roles("ADMIN")
                 .build();
 
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
+        // 일반 사용자 계정: 로그인만 가능, 개발자 페이지 접근 불가
+        UserDetails user = User.withUsername("user")
+                .password(passwordEncoder.encode("password"))
                 .roles("USER")
                 .build();
 
+        // 지금은 DB가 아니라 메모리에 사용자 저장
         return new InMemoryUserDetailsManager(admin, user);
     }
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
+        // 기존 InMemoryRegisteredClientRepository 대신
+        // save()로 런타임에 새 클라이언트를 등록할 수 있는 mutable 저장소 사용
         MutableRegisteredClientRepository repository = new MutableRegisteredClientRepository();
 
+        // 서버 실행 시 기본으로 하나의 OAuth 클라이언트를 미리 등록
         RegisteredClient defaultClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("oidc-client")
                 .clientSecret("{noop}secret")
@@ -120,12 +135,16 @@ public class ServerConfig {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                // 로그인 성공 후 code를 돌려보낼 redirect URI
                 .redirectUri("http://127.0.0.1:8080/login/oauth2/code/oidc-client")
                 .postLogoutRedirectUri("http://127.0.0.1:8080/")
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
+                // 동의 화면 표시, PKCE는 일단 사용 안 함
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).requireProofKey(false).build())
                 .build();
+
+        // 기본 클라이언트를 저장소에 저장
         repository.save(defaultClient);
 
         return repository;
