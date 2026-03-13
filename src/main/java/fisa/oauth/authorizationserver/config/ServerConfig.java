@@ -83,7 +83,9 @@ public class ServerConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
+                        .loginPage("/login")
                         .defaultSuccessUrl("/developer/clients/new", false)
+                        .permitAll()
                 );
 
         return http.build();
