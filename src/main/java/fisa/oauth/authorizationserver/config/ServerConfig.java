@@ -99,10 +99,23 @@ public class ServerConfig {
                 .formLogin(form -> form
                         // 커스텀 로그인 페이지 경로 (LoginController에서 처리)
                         .loginPage("/login")
-                        // 직접 로그인 시 ADMIN이 클라이언트 등록 페이지로 이동
-                        // false = 원래 요청(OAuth 흐름 등)이 있으면 그쪽으로 우선 이동
-                        .defaultSuccessUrl("/developer/clients/new", false)
+                        // 로그인 성공 시 역할별 분기: ADMIN → 등록 페이지, USER → 접근 거부
+                        .successHandler((request, response, authentication) -> {
+                            boolean isAdmin = authentication.getAuthorities().stream()
+                                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+                            if (isAdmin) {
+                                response.sendRedirect("/developer/clients/new");
+                            } else {
+                                response.sendRedirect("/login?denied");
+                            }
+                        })
                         // /login 페이지 자체는 인증 없이 접근 가능
+                        .permitAll()
+                )
+                // 로그아웃 설정
+                .logout(logout -> logout
+                        .logoutRequestMatcher(request -> request.getRequestURI().equals("/logout"))
+                        .logoutSuccessUrl("/login")
                         .permitAll()
                 );
 
