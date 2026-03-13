@@ -216,6 +216,10 @@
             로그아웃되었습니다.
         </div>
 
+        <div th:if="${param.denied}" class="message-error">
+            관리자 계정으로만 접근할 수 있습니다.
+        </div>
+
         <form th:action="@{/login}" method="post">
             <div class="form-group">
                 <label>아이디</label>

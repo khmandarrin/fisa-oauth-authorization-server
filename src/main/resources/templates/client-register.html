@@ -115,6 +115,25 @@
         .btn:hover {
             background: #1557b0;
         }
+
+        .btn-logout {
+            width: 100%;
+            margin-top: 10px;
+            background: white;
+            color: #d93025;
+            border: 1px solid #d93025;
+            padding: 11px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: #d93025;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -156,6 +175,10 @@
 
         <button type="submit" class="btn">등록</button>
 
+    </form>
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" class="btn-logout">로그아웃</button>
     </form>
 </div>
 
