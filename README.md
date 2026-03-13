@@ -3,6 +3,16 @@
 카카오, 구글 소셜 로그인처럼 동작하는 자체 OAuth2 인가서버를 구현한 프로젝트입니다.
 개발자가 UI를 통해 클라이언트 애플리케이션을 동적으로 등록하고, OAuth2 Authorization Code + PKCE 방식으로 인증할 수 있습니다.
 
+## 목차
+
+- [구성](#구성)
+- [참고 문서](#참고-문서)
+- [전체 OAuth2 흐름](#전체-oauth2-흐름)
+- [API 엔드포인트](#api-엔드포인트)
+  - [Provider (:9000)](#provider-9000)
+  - [백엔드 / Resource Server (:8081)](#백엔드--resource-server-8081)
+  - [Developer Portal / React (:3000)](#developer-portal--react-3000)
+    
 ## 구성
 
 | 모듈 | 포트 | 설명 |
