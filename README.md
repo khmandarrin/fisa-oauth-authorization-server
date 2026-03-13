@@ -2,126 +2,39 @@
 
 
 ## 전체 OAuth2 흐름
-<img width="1300" height="868" alt="image (1)" src="https://github.com/user-attachments/assets/0eaea57d-c215-44bd-abb2-025dd3c6c725" />
-<img width="1534" height="986" alt="image (2)" src="https://github.com/user-attachments/assets/b8f56221-fdc3-4b51-a783-2195d5f73f2e" />
-<img width="1548" height="986" alt="image (3)" src="https://github.com/user-attachments/assets/0ef88a19-6c45-4b56-832f-537251679b3b" />
-<img width="1472" height="1362" alt="image (4)" src="https://github.com/user-attachments/assets/df9afc76-b293-4250-9201-ddd4e0b2cb4c" />
-<img width="1340" height="614" alt="image (5)" src="https://github.com/user-attachments/assets/a55076a0-56a5-4f5f-865c-bf527a2da0eb" />
-<img width="1336" height="736" alt="image (6)" src="https://github.com/user-attachments/assets/12fa33a3-8f25-429b-8b4c-ab4ed08be952" />
-
-
-
 
 
 ### 사전 작업. 관리자 클라이언트 등록
 
-```
-관리자              Developer Portal (:3000)          Provider (:9000)
-  │                          │                              │
-  │ 등록 버튼 클릭               │                              │
-  │────────────────────────▶ │                              │
-  │                          │    Provider 등록 페이지로 이동    │
-  │                          │ ────────────────────────────▶│
-  │                          │                              │ /login 필요 시 이동
-  │ ◀───────────────────────────────────────────────────────│
-  │ ID/PW 입력                │                              │
-  │ ───────────────────────────────────────────────────────▶│
-  │                          │                              │ 세션 로그인 성공
-  │                          │                              │
-  │ 앱 등록 폼 작성             │                              │
-  │ ───────────────────────────────────────────────────────▶│
-  │                          │                              │ client_id / secret 생성
-  │                          │                              │ 인메모리 저장
-  │                          │ ◀────  등록 결과 페이지   ───────│
-  │ client_id / secret 확인   │                              │
-```
+<img width="1300" height="868" alt="image (1)" src="https://github.com/user-attachments/assets/0eaea57d-c215-44bd-abb2-025dd3c6c725" />
 
 ---
 
-### Step 1. 로그인 버튼 클릭 → Provider로 이동
+### Step 1. 로그인 버튼 클릭 → 인가서버로 이동 (① ~ ③)
 
-```
-일반 유저              React (:3000)                  Provider (:9000)
-  │                        │                                │
-  │ 로그인 버튼 클릭           │                                │
-  │───────────────────────▶│                                │
-  │                        │  GET /oauth2/authorize         │
-  │                        │  ?client_id={발급받은 ID}        │
-  │                        │  &redirect_uri=.../callback    │
-  │                        │  &scope=openid profile         │
-  │                        │  &state={랜덤값}                │
-  │                        │ ──────────────────────────────▶│
-  │                        │                                │ 로그인 안됨
-  │ ◀────────────────────────────────────────────────────── │
-  │      /login 리다이렉트    │                                │
-```
+<img width="1534" height="986" alt="image (2)" src="https://github.com/user-attachments/assets/b8f56221-fdc3-4b51-a783-2195d5f73f2e" />
 
 ---
 
-### Step 2. Provider가 user DB 조회 후 code 발급
+### Step 2. 로그인 + authorization_code 발급 (④ ~ ⑤)
 
-```
-일반 유저              React (:3000)                  Provider (:9000)
-  │                        │                                │
-  │ ID/PW 입력              │                                │
-  │ ───────────────────────────────────────────────────────▶│
-  │                        │                                │ users 테이블 조회
-  │                        │                                │ 로그인 성공
-  │ ◀────────────────────────────────────────────────────── │
-  │      Consent 페이지      │                                │
-  │                        │                                │
-  │ 허용 클릭                │                                │
-  │ ───────────────────────────────────────────────────────▶│
-  │                        │                                │ code 생성
-  │                        │                                │ oauth2_authorization 저장
-  │                        │ ◀── /callback?code=xxx ────────│
-```
+<img width="1548" height="986" alt="image (3)" src="https://github.com/user-attachments/assets/0ef88a19-6c45-4b56-832f-537251679b3b" />
 
 ---
 
-### Step 3. 프론트가 code를 백엔드에 전달, 백엔드가 token 요청
+### Step 3. code → token 교환 (⑥ ~ ⑩)
 
-```
-일반 유저     React (:3000)          백엔드 (:8081)          Provider (:9000)
-  │               │                        │                       │
-  │               │ /callback?code=xxx     │                       │
-  │               │ code, state 추출        │                       │
-  │               │ state 검증              │                       │
-  │               │                        │                       │
-  │               │  POST /api/auth/token  │                       │
-  │               │  { code: "xxx" }       │                       │
-  │               │ ──────────────────────▶│                       │
-  │               │                        │  POST /oauth2/token   │
-  │               │                        │  Basic {id:secret}    │
-  │               │                        │  grant_type=auth_code │
-  │               │                        │  code=xxx             │
-  │               │                        │ ─────────────────────▶│
-  │               │                        │ ◀── Access Token ─────│
-```
+<img width="1472" height="1362" alt="image (4)" src="https://github.com/user-attachments/assets/df9afc76-b293-4250-9201-ddd4e0b2cb4c" />
 
 ---
 
-### Step 4. 백엔드가 프론트에 토큰 전달 (로그인 성공)
+### Step 4. access_token 쿠키 발급 + 리다이렉트 (로그인 성공) (⑪ ~ ⑫)
 
-```
-일반 유저     React (:3000)          백엔드 (:8081)          Resource Server (:8081)
-  │               │                        │                          │
-  │               │ ◀── Access Token ──────│                          │
-  │               │     (쿠키 or 응답)       │                          │
-  │               │                        │                          │
-  │ 로그인 성공      │                        │                          │
-  │ ◀─────────────│                        │                          │
-  │               │                        │                          │
-  │ 기능 사용       │                         │                          │
-  │───────────────▶│                        │                          │
-  │               │  GET /api/resource      │                          │
-  │               │  Bearer {Access Token}  │                          │
-  │               │ ────────────────────────────────────────────────▶ │
-  │               │                        │                          │ 토큰 검증
-  │               │ ◀── 데이터 응답 ────────────────────────────────── │
-  │ 데이터 표시    │                        │                          │
-  │ ◀─────────────│                        │                          │
-```
+<img width="1340" height="614" alt="image (5)" src="https://github.com/user-attachments/assets/a55076a0-56a5-4f5f-865c-bf527a2da0eb" />
+
+### Step 5. userInfo 조회 (⑬ ~ ⑯)
+
+<img width="1336" height="736" alt="image (6)" src="https://github.com/user-attachments/assets/12fa33a3-8f25-429b-8b4c-ab4ed08be952" />
 
 ---
 
