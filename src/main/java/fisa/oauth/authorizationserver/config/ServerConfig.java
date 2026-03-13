@@ -160,7 +160,13 @@ public class ServerConfig {
                 .roles("USER")
                 .build();
 
-        return new InMemoryUserDetailsManager(admin, user);
+        UserDetails user1 = User.withUsername("user1")
+                .password(passwordEncoder.encode("password"))
+                .roles("USER")
+                .build();
+
+
+        return new InMemoryUserDetailsManager(admin, user, user1);
     }
 
     /**
