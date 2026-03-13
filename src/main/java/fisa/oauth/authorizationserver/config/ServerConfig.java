@@ -75,14 +75,12 @@ public class ServerConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/css/**", "/js/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/provider", "/.well-known/**").permitAll()
                         .requestMatchers("/developer/**", "/provider/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")
-                        .permitAll()
-                        .defaultSuccessUrl("/developer/clients/new", true)
+                        .defaultSuccessUrl("/developer/clients/new", false)
                 );
 
         return http.build();

@@ -1,32 +1,162 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Provider Client 등록</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 60px 50px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e8f0fe;
+            color: #1a73e8;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #1a1a2e;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #333;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input:focus {
+            border-color: #1a73e8;
+        }
+
+        .scope-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        .scope-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: normal;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .scope-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            padding: 0;
+            border: none;
+            cursor: pointer;
+            accent-color: #1a73e8;
+        }
+
+        .btn {
+            width: 100%;
+            margin-top: 10px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 13px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #1557b0;
+        }
+    </style>
 </head>
 <body>
 
-<h2>Client 등록</h2>
+<div class="card">
+    <div class="badge">OAuth 2.0 + OIDC</div>
+    <h2>Client 등록</h2>
 
-<form th:action="@{/provider/clients}" th:object="${request}" method="post">
+    <form th:action="@{/provider/clients}" th:object="${request}" method="post">
 
-    <div>
-        <label>Client Name</label>
-        <input type="text" th:field="*{clientName}" />
-    </div>
+        <div class="form-group">
+            <label>Client Name</label>
+            <input type="text" th:field="*{clientName}" />
+        </div>
 
-    <div>
-        <label>Redirect URI</label>
-        <input type="text" name="redirectUris" />
-    </div>
+        <div class="form-group">
+            <label>Redirect URI</label>
+            <input type="text" name="redirectUris" />
+        </div>
 
-    <div>
-        <label>Scopes (쉼표 구분)</label>
-        <input type="text" name="scopes" placeholder="read,write,profile"/>
-    </div>
+        <div class="form-group">
+            <label>Scopes</label>
+            <div class="scope-group">
+                <label class="scope-item">
+                    <input type="checkbox" name="scopes" value="read"> read
+                </label>
+                <label class="scope-item">
+                    <input type="checkbox" name="scopes" value="write"> write
+                </label>
+                <label class="scope-item">
+                    <input type="checkbox" name="scopes" value="profile"> profile
+                </label>
+                <label class="scope-item">
+                    <input type="checkbox" name="scopes" value="openid"> openid
+                </label>
+            </div>
+        </div>
 
-    <button type="submit">등록</button>
+        <button type="submit" class="btn">등록</button>
 
-</form>
+    </form>
+</div>
 
 </body>
 </html>

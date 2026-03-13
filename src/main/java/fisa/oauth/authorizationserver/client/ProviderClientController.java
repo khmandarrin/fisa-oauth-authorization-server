@@ -16,6 +16,11 @@ public class ProviderClientController {
         this.providerClientService = providerClientService;
     }
 
+    @GetMapping("/provider")
+    public String mainPage() {
+        return "index";
+    }
+
     @GetMapping("/developer/clients/new")
     public String registerPage(Model model) {
         model.addAttribute("request", new ClientRegisterRequest());
