@@ -69,6 +69,35 @@
             border-color: #1a73e8;
         }
 
+        .scope-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        .scope-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: normal;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .scope-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            padding: 0;
+            border: none;
+            cursor: pointer;
+            accent-color: #1a73e8;
+        }
+
         .btn {
             width: 100%;
             margin-top: 10px;
@@ -107,8 +136,21 @@
         </div>
 
         <div class="form-group">
-            <label>Scopes (쉼표 구분)</label>
-            <input type="text" name="scopes" placeholder="read,write,profile"/>
+            <label>Scopes</label>
+            <div class="scope-group">
+                <label class="scope-item">
+                    <input type="checkbox" name="scopes" value="read"> read
+                </label>
+                <label class="scope-item">
+                    <input type="checkbox" name="scopes" value="write"> write
+                </label>
+                <label class="scope-item">
+                    <input type="checkbox" name="scopes" value="profile"> profile
+                </label>
+                <label class="scope-item">
+                    <input type="checkbox" name="scopes" value="openid"> openid
+                </label>
+            </div>
         </div>
 
         <button type="submit" class="btn">등록</button>
