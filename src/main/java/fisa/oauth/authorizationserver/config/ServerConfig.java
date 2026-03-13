@@ -84,7 +84,20 @@ public class ServerConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/developer/clients/new", false)
+                        .successHandler((request, response, authentication) -> {
+                            boolean isAdmin = authentication.getAuthorities().stream()
+                                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+                            if (isAdmin) {
+                                response.sendRedirect("/developer/clients/new");
+                            } else {
+                                response.sendRedirect("/login?denied");
+                            }
+                        })
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutRequestMatcher(request -> request.getRequestURI().equals("/logout"))
+                        .logoutSuccessUrl("/login")
                         .permitAll()
                 );
 
