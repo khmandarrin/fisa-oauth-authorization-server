@@ -1,27 +1,147 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>등록 완료</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 60px 50px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e6f4ea;
+            color: #1e8e3e;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #1a1a2e;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            margin-bottom: 12px;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #1a1a2e;
+            word-break: break-all;
+            font-family: monospace;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            font-size: 14px;
+            color: #1a1a2e;
+            font-family: monospace;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 24px;
+            background: #1a73e8;
+            color: white;
+            text-decoration: none;
+            padding: 13px 30px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #1557b0;
+        }
+    </style>
 </head>
 <body>
 
-<h2>Client 등록 완료</h2>
+<div class="card">
+    <div class="badge">등록 완료</div>
+    <h2>Client 등록 완료</h2>
 
-<p>Client ID: <span th:text="${result.clientId}"></span></p>
-<p>Client Secret: <span th:text="${result.clientSecret}"></span></p>
-<p>Client Name: <span th:text="${result.clientName}"></span></p>
+    <div class="info-box">
+        <div class="info-row">
+            <div class="info-label">Client ID</div>
+            <div class="info-value" th:text="${result.clientId}"></div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Client Secret</div>
+            <div class="info-value" th:text="${result.clientSecret}"></div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Client Name</div>
+            <div class="info-value" th:text="${result.clientName}"></div>
+        </div>
+    </div>
 
-<p>Redirect URIs:</p>
-<ul>
-    <li th:each="uri : ${result.redirectUris}" th:text="${uri}"></li>
-</ul>
+    <div class="info-label" style="margin-bottom:8px;">Redirect URIs</div>
+    <ul>
+        <li th:each="uri : ${result.redirectUris}" th:text="${uri}"></li>
+    </ul>
 
-<p>Scopes:</p>
-<ul>
-    <li th:each="scope : ${result.scopes}" th:text="${scope}"></li>
-</ul>
+    <div class="info-label" style="margin-top:16px; margin-bottom:8px;">Scopes</div>
+    <ul>
+        <li th:each="scope : ${result.scopes}" th:text="${scope}"></li>
+    </ul>
 
-<a th:href="@{/developer/clients/new}">다시 등록</a>
+    <a th:href="@{/developer/clients/new}" class="btn">다시 등록</a>
+</div>
 
 </body>
 </html>

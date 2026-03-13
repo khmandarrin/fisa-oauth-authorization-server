@@ -78,13 +78,15 @@ public class ServerConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         // 정적 리소스는 로그인 없이 허용
-                        .requestMatchers("/css/**", "/js/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/provider", "/.well-known/**").permitAll()
                         // 개발자용 클라이언트 등록 페이지/등록 API는 ADMIN만 접근 가능
                         .requestMatchers("/developer/**", "/provider/**").hasRole("ADMIN")
                         // 그 외 나머지 요청은 로그인 필요
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults());
+                .formLogin(form -> form
+                        .defaultSuccessUrl("/developer/clients/new", true)
+                );
 
         return http.build();
     }
