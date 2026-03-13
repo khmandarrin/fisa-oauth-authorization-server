@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 public class ProviderClientController {
 
@@ -29,9 +31,15 @@ public class ProviderClientController {
 
     @PostMapping("/provider/clients")
     public String register(
-            @ModelAttribute("request") ClientRegisterRequest request,
+            @RequestParam("clientName") String clientName,
+            @RequestParam("redirectUris") String redirectUris,
+            @RequestParam(value = "scopes", required = false) String scopes,
             Model model
     ) {
+        ClientRegisterRequest request = new ClientRegisterRequest();
+        request.setClientName(clientName);
+        request.setRedirectUris(List.of(redirectUris));
+        request.setScopes(scopes != null && !scopes.isBlank() ? List.of(scopes) : null);
 
         ClientRegisterResponse response = providerClientService.register(request);
         model.addAttribute("result", response);
