@@ -30,6 +30,8 @@ import org.springframework.security.oauth2.server.authorization.settings.ClientS
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 import java.security.KeyPair;
@@ -106,7 +108,17 @@ public class ServerConfig {
                             if (isAdmin) {
                                 response.sendRedirect("/developer/clients/new");
                             } else {
-                                response.sendRedirect("/login?denied");
+                                // 세션에 저장된 요청이 있는 경우 = OAuth 흐름으로 들어온 USER
+                                boolean hasOAuthFlow = new HttpSessionRequestCache()
+                                        .getRequest(request, response) != null;
+                                if (hasOAuthFlow) {
+                                    SavedRequestAwareAuthenticationSuccessHandler handler =
+                                            new SavedRequestAwareAuthenticationSuccessHandler();
+                                    handler.onAuthenticationSuccess(request, response, authentication);
+                                } else {
+                                    // 직접 9000 로그인 시도한 USER → 거부
+                                    response.sendRedirect("/login?denied");
+                                }
                             }
                         })
                         // /login 페이지 자체는 인증 없이 접근 가능
