@@ -17,8 +17,8 @@
 
 | 모듈 | 포트 | 설명 |
 |------|------|------|
-| React | `:5173` | 프론트엔드 클라이언트 |
-| Spring Boot | `:8080` | 백엔드 + Resource Server |
+| React | `:5173` | 클라이언트 애플리케이션 |
+| Spring Boot | `:8080` | 리소스 서버 |
 | Spring Authorization Server | `:9000` | 인가서버 (Provider) |
 
 ## 참고 문서
