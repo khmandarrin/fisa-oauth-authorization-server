@@ -83,3 +83,38 @@
 |`/register`|앱 등록 폼|
 |`/apps/{id}`|앱 상세 (client_id/secret)|
 |`/callback`|code 받는 페이지|
+
+## 프레임워크 처리 영역 vs 직접 구현 영역
+
+### 프레임워크가 처리하는 부분
+Spring Authorization Server와 Spring Security 프레임워크가 OAuth 2.0 / OpenID Connect 프로토콜의 핵심 인증 흐름을 처리한다.
+
+- OAuth 인가 요청 처리 (`/oauth2/authorize`)
+- Authorization Code 생성
+- Access Token / Refresh Token 발급 (`/oauth2/token`)
+- JWT 생성 및 서명
+- 토큰 검증
+- 클라이언트 인증 (`client_id`, `client_secret`)
+- OAuth 리다이렉트 처리 (`redirect_uri`)
+- 사용자 로그인 인증 처리 (Spring Security)
+- Scope 검증
+- JWKS 공개키 제공
+
+---
+
+### 직접 구현한 부분
+서비스 요구사항에 맞는 관리 기능 및 커스터마이징 로직을 직접 구현하였다.
+
+- OAuth 클라이언트 등록 페이지
+- `client_id`, `client_secret` 랜덤 생성 로직
+- 클라이언트 등록 API
+- `RegisteredClientRepository`를 활용한 클라이언트 저장 처리
+- 커스텀 Consent(동의) 화면
+- 사용자 로그인용 `UserDetailsService` 구성
+- OAuth 클라이언트 관리 로직
+
+## 향후 보완 사항
+
+- **회원가입 기능 추가**
+  현재 사용자 계정이 메모리 기반으로 관리되므로 신규 사용자 등록이 불가능하다.  
+  향후 DB 기반 사용자 저장소를 도입하고 회원가입 기능을 추가하여 사용자 관리 기능 추가가 필요하다.
