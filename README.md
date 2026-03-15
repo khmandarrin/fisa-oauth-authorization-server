@@ -10,8 +10,8 @@
 - [전체 OAuth2 흐름 (시퀀스)](#전체-oauth2-흐름)
 - [API 엔드포인트](#api-엔드포인트)
   - [Provider (:9000)](#provider-9000)
-  - [백엔드 / Resource Server (:8081)](#백엔드--resource-server-8080)
-  - [Developer Portal / React (:3000)](#developer-portal--react-5173)
+  - [백엔드 / Resource Server (:8080)](#백엔드--resource-server-8080)
+  - [Developer Portal / React (:5173)](#developer-portal--react-5173)
     
 ## 구성
 
