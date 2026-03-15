@@ -10,8 +10,8 @@
 - [전체 OAuth2 흐름 (시퀀스)](#전체-oauth2-흐름)
 - [API 엔드포인트](#api-엔드포인트)
   - [Provider (:9000)](#provider-9000)
-  - [백엔드 / Resource Server (:8081)](#백엔드--resource-server-8081)
-  - [Developer Portal / React (:3000)](#developer-portal--react-3000)
+  - [백엔드 / Resource Server (:8081)](#백엔드--resource-server-8080)
+  - [Developer Portal / React (:3000)](#developer-portal--react-5173)
     
 ## 구성
 
@@ -66,7 +66,7 @@
 
 > 클라이언트 등록 시 `clientName`, `redirectUris`, `scopes`를 입력하면 `client_id`/`client_secret`이 발급됩니다.
 
-### 백엔드 / Resource Server (:8081)
+### 백엔드 / Resource Server (:8080)
 
 |Method|엔드포인트|설명|인증|
 |---|---|---|---|
@@ -74,7 +74,7 @@
 |GET|`/api/me`|내 정보 조회|Bearer Token|
 |GET|`/api/resource`|보호된 리소스|Bearer Token|
 
-### Developer Portal / React (:3000)
+### Developer Portal / React (:5173)
 
 |경로|설명|
 |---|---|
